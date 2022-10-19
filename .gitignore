@@ -1,0 +1,10 @@
+*.class
+*.wav
+
+/res/sfx/*
+/res/tile/*
+/bin/*
+
+.settings
+.classpath
+.project
