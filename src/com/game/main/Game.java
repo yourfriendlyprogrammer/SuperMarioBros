@@ -1,11 +1,22 @@
 package com.game.main;
 
-public class Game implements Runnable {
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+
+import com.game.gfx.Windows;
+
+public class Game extends Canvas implements Runnable {
 
 	// GAME CONSTANTS
 	private static final int MILLIS_PER_SEC = 1000;
 	private static final int NANOS_PER_SEC = 1000000000;
 	private static final double NUM_TICKS = 60.0;
+	private static final String NAME = "Super Mario Bros";
+	
+	private static final int WINDOW_WIDTH = 960;
+	private static final int WINDOW_HEIGHT = 720;
 	
 	// GAME VARIABLES
 	private boolean running;
@@ -22,6 +33,8 @@ public class Game implements Runnable {
 	}
 	
 	private void initialize() {
+		new Windows(WINDOW_WIDTH, WINDOW_HEIGHT, NAME, this);
+		
 		start();
 	}
 	
@@ -83,15 +96,21 @@ public class Game implements Runnable {
 	}
 	
 	private void render() {
+		BufferStrategy buf = this.getBufferStrategy();
+		if (buf == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
 		
+		// draw graphics
+		Graphics g = buf.getDrawGraphics();
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		// clean for next frame
+		g.dispose();
+		buf.show();
 	}
+	
 }
-
-
-
-
-
-
-
-
-
