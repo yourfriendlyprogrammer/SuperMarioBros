@@ -8,6 +8,7 @@ import java.awt.image.BufferStrategy;
 import com.game.gfx.Windows;
 import com.game.object.Player;
 import com.game.object.util.Handler;
+import com.game.object.util.KeyInput;
 
 public class Game extends Canvas implements Runnable {
 
@@ -37,6 +38,8 @@ public class Game extends Canvas implements Runnable {
 	
 	private void initialize() {
 		handler = new Handler();
+		this.addKeyListener(new KeyInput(handler));
+		
 		
 		//temporary code
 		handler.setPlayer(new Player(32, 32, 1, handler));
