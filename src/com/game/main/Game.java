@@ -3,8 +3,10 @@ package com.game.main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
+import com.game.gfx.Camera;
 import com.game.gfx.Windows;
 import com.game.object.Block;
 import com.game.object.Player;
@@ -21,6 +23,10 @@ public class Game extends Canvas implements Runnable {
 	
 	private static final int WINDOW_WIDTH = 960;
 	private static final int WINDOW_HEIGHT = 720;
+	private static final int SCREEN_WIDTH = WINDOW_WIDTH - 67;
+	private static final int SCREEN_HEIGHT = WINDOW_HEIGHT;
+	private static final int SCREEN_OFFSET = 16*3;
+	
 	
 	// GAME VARIABLES
 	private boolean running;
@@ -28,6 +34,7 @@ public class Game extends Canvas implements Runnable {
 	// GAME COMPONENTS
 	private Thread thread;
 	private Handler handler;
+	private Camera cam;
 	
 	public Game() {
 		initialize();
@@ -52,7 +59,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		
-		
+		cam = new Camera(0, SCREEN_OFFSET);
 		new Windows(WINDOW_WIDTH, WINDOW_HEIGHT, NAME, this);
 		
 		start();
@@ -113,6 +120,7 @@ public class Game extends Canvas implements Runnable {
 	
 	private void tick() {
 		handler.tick();
+		cam.tick(handler.getPlayer());
 	}
 	
 	private void render() {
@@ -124,11 +132,14 @@ public class Game extends Canvas implements Runnable {
 		
 		// draw graphics
 		Graphics g = buf.getDrawGraphics();
+		Graphics2D g2d = (Graphics2D) g;
 		
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		
+		g2d.translate(cam.getX(), cam.getY());
 		handler.render(g);
+		g2d.translate(-cam.getX(), -cam.getY());
 		
 		// clean for next frame
 		g.dispose();
@@ -142,4 +153,13 @@ public class Game extends Canvas implements Runnable {
 	public static int getWindowWidth() {
 		return WINDOW_WIDTH;
 	}
+	
+	public static int getScreenHeight() {
+		return SCREEN_HEIGHT;
+	}
+	
+	public static int getScreenWidth() {
+		return SCREEN_WIDTH;
+	}
+	
 }
