@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 import com.game.gfx.Camera;
 import com.game.gfx.Texture;
 import com.game.gfx.Windows;
+import com.game.main.util.LevelHandler;
 import com.game.object.Block;
 import com.game.object.Player;
 import com.game.object.util.Handler;
@@ -37,6 +38,7 @@ public class Game extends Canvas implements Runnable {
 	private Handler handler;
 	private Camera cam;
 	private static Texture tex;
+	private LevelHandler levelHandler;
 	
 	public Game() {
 		initialize();
@@ -52,16 +54,8 @@ public class Game extends Canvas implements Runnable {
 		handler = new Handler();
 		this.addKeyListener(new KeyInput(handler));
 		
-		
-		//temporary code
-		handler.setPlayer(new Player(32, 32, 2, handler));
-		for (int i = 0; i < 20; i++) {
-			handler.addObj(new Block(i*32, 32*10, 32, 32, 2, 1));
-		}
-		for (int i = 0; i < 30; i++) {
-			handler.addObj(new Block(i*32, 32*15, 32, 32, 2, 1));
-		}
-		
+		levelHandler = new LevelHandler(handler);
+		levelHandler.start();
 		
 		cam = new Camera(0, SCREEN_OFFSET);
 		new Windows(WINDOW_WIDTH, WINDOW_HEIGHT, NAME, this);
