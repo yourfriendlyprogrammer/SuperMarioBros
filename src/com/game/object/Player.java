@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import com.game.gfx.Animation;
 import com.game.gfx.Texture;
 import com.game.main.Game;
 import com.game.object.util.Handler;
@@ -13,22 +14,36 @@ import com.game.object.util.ObjectId;
 
 public class Player extends GameObject {
 	private static final float WIDTH = 16;
-	private static final float HEIGHT = 32;
+	private static final float HEIGHT = 16;
 	
 	private Handler handler;
 	private Texture tex;
+	
+	private PlayerState state;
 	private BufferedImage[] spriteL, spriteS;
+	private Animation playerWalkL, playerWalkS;
+	private BufferedImage[] currSprite;
+	private Animation currAnimation;
+	
 	
 	private boolean jumped = false;
 	private int health = 2;
+	private boolean forward = false;
 	
 	public Player(float x, float y, int scale, Handler handler) {
 		super(x, y, ObjectId.Player, WIDTH, HEIGHT, scale);
 		this.handler = handler;
 		tex = Game.getTexture();
+		
 		spriteL = tex.getMarioL();
 		spriteS = tex.getMarioS();
 		
+		playerWalkL = new Animation(5, spriteL[1], spriteL[2], spriteL[3]);
+		playerWalkS = new Animation(5, spriteS[1], spriteS[2], spriteS[3]);
+		
+		state = PlayerState.Small;
+		currSprite = spriteS;
+		currAnimation = playerWalkS;
 	}
 
 	@Override
@@ -38,14 +53,25 @@ public class Player extends GameObject {
 		applyGravity();
 		
 		collision();
+		currAnimation.runAnimation();
 	}
 
 	@Override
 	public void render(Graphics g) {
-		if (health == 1) {
-			g.drawImage(spriteS[0], (int) getX(), (int) getY(), (int) getWidth(), (int) getHeight()/2, null);
-		} else if (health == 2) {
-			g.drawImage(spriteL[0], (int) getX(), (int) getY(), (int) getWidth(), (int) getHeight(), null);
+		if (jumped) {
+			if (forward) {
+				g.drawImage(currSprite[5], (int) getX(), (int) getY(), (int) getWidth(), (int) getHeight(), null);
+			} else {
+				g.drawImage(currSprite[5], (int) (getX() + getWidth()), (int) getY(), (int) -getWidth(), (int) getHeight(), null);
+			}
+		} else if (getVelX() > 0) {
+			currAnimation.drawAnimation(g, (int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
+			forward = true;
+		} else if (getVelX() < 0) {
+			currAnimation.drawAnimation(g, (int) (getX() + getWidth()), (int) getY(), (int) -getWidth(), (int) getHeight());
+			forward = false;
+		} else {
+			g.drawImage(currSprite[0], (int) getX(), (int) getY(), (int) getWidth(), (int) getHeight(), null);
 		}
 		
 		//showBounds(g);
