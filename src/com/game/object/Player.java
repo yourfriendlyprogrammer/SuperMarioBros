@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 import com.game.gfx.Animation;
 import com.game.gfx.Texture;
@@ -24,7 +25,7 @@ public class Player extends GameObject {
 	private Animation playerWalkL, playerWalkS;
 	private BufferedImage[] currSprite;
 	private Animation currAnimation;
-	
+	private LinkedList<Block> removeBlocks;
 	
 	private boolean jumped = false;
 	private int health = 2;
@@ -34,6 +35,7 @@ public class Player extends GameObject {
 		super(x, y, ObjectId.Player, WIDTH, HEIGHT, scale);
 		this.handler = handler;
 		tex = Game.getTexture();
+		removeBlocks = new LinkedList<Block>();
 		
 		spriteL = tex.getMarioL();
 		spriteS = tex.getMarioS();
@@ -80,8 +82,15 @@ public class Player extends GameObject {
 	private void collision() {
 		for (int i = 0; i < handler.getGameObjs().size(); i++) {
 			GameObject temp = handler.getGameObjs().get(i);
+			if (temp == this) continue;
+			if (removeBlocks.contains(temp)) continue;
 			
-			if (temp.getId() == ObjectId.Block || temp.getId() == ObjectId.Pipe) {
+			if (temp.getId() == ObjectId.Block && getBoundsTop().intersects(temp.getBounds())) {
+				setY(temp.getY() + temp.getHeight());
+				setVelY(0);
+				((Block) temp).hit();
+				removeBlocks.add((Block) temp);
+			} else {
 				if (getBounds().intersects(temp.getBounds())) {
 					setY(temp.getY() - getHeight());
 					setVelY(0);
@@ -150,6 +159,19 @@ public class Player extends GameObject {
 	public void setJumped(boolean hasJumped) {
 		jumped = hasJumped;
 	}
+	
+	public LinkedList<Block> getAndResetRemoveBlock() {
+		LinkedList<Block> output = new LinkedList<Block>();
+		for (Block removeBlock : removeBlocks) {
+			if (!removeBlock.shouldRemove()) continue;
+			output.add(removeBlock);
+		}
+		for (Block removeBlock : output) {
+			removeBlocks.remove(removeBlock);
+		}
+		return output;
+	}
+	
 }
 
 

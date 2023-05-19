@@ -18,7 +18,7 @@ public class Texture {
 	private BufferedImage player_sheet, enemy_sheet, npc_sheet, block_sheet,
 						  tile_sheet, game_over_sheet, intro_sheet;
 	public BufferedImage[] mario_l, mario_s, tile_1, tile_2, tile_3, tile_4,
-						   pipe_1;
+						   pipe_1, debris_1;
 	
 	public Texture() {
 		mario_l = new BufferedImage[MARIO_L_COUNT];
@@ -28,6 +28,7 @@ public class Texture {
 		tile_3 = new BufferedImage[TILE_1_COUNT + TILE_2_COUNT];
 		tile_4 = new BufferedImage[TILE_1_COUNT + TILE_2_COUNT];
 		pipe_1 = new BufferedImage[4];
+		debris_1 = new BufferedImage[4];
 		
 		loader = new BufferedImageLoader();
 		
@@ -47,6 +48,7 @@ public class Texture {
 		getPlayerTextures();
 		getTileTextures();
 		getPipeTextures();
+		getDebrisTextures();
 	}
 	
 	private void getPlayerTextures() {
@@ -115,6 +117,17 @@ public class Texture {
 		
 	}
 	
+	private void getDebrisTextures() {
+		int x_off = 304;
+		int y_off = 112;
+		int width = 8;
+		int height = 8;
+
+		debris_1[0] = block_sheet.getSubimage(x_off, y_off, width, height);
+		debris_1[1] = block_sheet.getSubimage(x_off, y_off + height, width, height);
+		debris_1[2] = block_sheet.getSubimage(x_off + width, y_off, width, height);
+		debris_1[3] = block_sheet.getSubimage(x_off + width, y_off + height, width, height);
+	}
 	
 	public BufferedImage[] getMarioL() {
 		return mario_l;
@@ -143,6 +156,10 @@ public class Texture {
 	public BufferedImage[] getPipe1() {
 		return pipe_1;
 	}	
+	
+	public BufferedImage[] getDebris1() {
+		return debris_1;
+	}
 }
 
 

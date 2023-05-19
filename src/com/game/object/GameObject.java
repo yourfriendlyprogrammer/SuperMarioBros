@@ -58,6 +58,10 @@ public abstract class GameObject {
 		this.height = height*scale;
 	}
 	
+	public void setScale(int scale) {
+		this.scale = scale;
+	}
+	
 	public float getX() {
 		return x;
 	}
@@ -85,4 +89,9 @@ public abstract class GameObject {
 	public float getHeight() {
 		return height;
 	}
+	
+	public int getScale() {
+		return scale;
+	}
+	
 }
